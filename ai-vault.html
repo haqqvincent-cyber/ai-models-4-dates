@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Vault • 8 Intelligent Chatbots</title>
+<style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#0a0a0a; color:#eee; height:100vh; overflow:hidden; }
+    .app { display:flex; flex-direction:column; height:100%; }
+    .header { text-align:center; padding:20px; background:#111; }
+    .header h1 { font-size:28px; background:linear-gradient(90deg,#fe3c72,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .tabs { display:flex; justify-content:center; gap:10px; padding:10px; background:#151515; }
+    .tab { padding:10px 20px; border-radius:30px; border:2px solid #333; cursor:pointer; font-weight:600; }
+    .tab.active { background:#fe3c72; border-color:#fe3c72; color:white; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:15px; padding:20px; overflow-y:auto; }
+    .bot { background:#1a1a1a; border-radius:16px; overflow:hidden; cursor:pointer; transition:0.2s; }
+    .bot:hover { transform:scale(1.05); }
+    .bot img { width:100%; height:170px; object-fit:cover; }
+    .info { padding:12px; text-align:center; }
+    .name { font-weight:700; font-size:15.5px; }
+    .role { font-size:12px; color:#aaa; }
+    .chat { display:none; flex-direction:column; height:100%; background:#0a0a0a; }
+    .chat.open { display:flex; }
+    .chat-header { height:65px; background:#111; display:flex; align-items:center; padding:0 15px; gap:12px; border-bottom:1px solid #222; }
+    .back { font-size:30px; background:none; border:none; color:#fe3c72; cursor:pointer; }
+    .messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; }
+    .msg { max-width:80%; padding:13px 17px; border-radius:18px; line-height:1.5; }
+    .sent { align-self:flex-end; background:#fe3c72; color:white; border-bottom-right-radius:6px; }
+    .received { align-self:flex-start; background:#222; border-bottom-left-radius:6px; }
+    .input-area { padding:15px; background:#111; display:flex; gap:10px; }
+    input { flex:1; padding:15px; border-radius:30px; border:none; background:#222; color:white; font-size:16px; }
+    button { background:#fe3c72; color:white; border:none; width:50px; height:50px; border-radius:50%; cursor:pointer; font-size:18px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">
+        <h1>AI Vault</h1>
+        <p>8 Intelligent AI Companions</p>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showAll(this)">All</button>
+        <button class="tab" onclick="showFemale(this)">👩 Female</button>
+        <button class="tab" onclick="showMale(this)">👨 Male</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+</div>
+
+<!-- Chat Screen -->
+<div class="chat" id="chatScreen">
+    <div class="chat-header">
+        <button class="back" onclick="goBack()">←</button>
+        <img id="chatImg" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid #fe3c72;" src="">
+        <div>
+            <div id="chatName" style="font-weight:700;"></div>
+            <div style="font-size:13px;color:#22c55e;">● Online • Very Intelligent</div>
+        </div>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="input-area">
+        <input id="userMsg" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendUserMessage()">
+        <button onclick="sendUserMessage()">↑</button>
+    </div>
+</div>
+
+<script>
+// ==================== 8 INTELLIGENT BOTS ====================
+const bots = [
+    {id:"scarlett", name:"Scarlett Montgomery", gender:"female", emoji:"💎", role:"Actress", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774141931552-ef7732ca-d61e-4db1-9db0-ab613effca53.png"},
+    {id:"alessandra", name:"Alessandra Rossi", gender:"female", emoji:"🔥", role:"Supermodel", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774142487555-0a8ff84e-5c63-4ee8-85f7-ebce1955c689.png"},
+    {id:"luna", name:"Luna Towles", gender:"female", emoji:"🌙", role:"Musician", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774143095145-cb305e9e-ce61-4a04-a53b-25e7de2964ee.png"},
+    {id:"ethan", name:"Ethan Blackwood", gender:"male", emoji:"🏔️", role:"Photographer", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144986748-cc5805dd-7d15-4a9f-a7b3-af35e7d59965.png"},
+    {id:"marcus", name:"Dr. Marcus Hale", gender:"male", emoji:"🧠", role:"Professor", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144986956-5b4e6ecd-7558-4a77-adcb-9e6fca9f5ba4.png"},
+    {id:"jax", name:"Jax Rivera", gender:"male", emoji:"🎸", role:"Tattoo Artist", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144987757-f4afc625-533c-450e-bc61-b59bb1573d17.png"},
+    {id:"liam", name:"Liam Voss", gender:"male", emoji:"💻", role:"Engineer", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144987982-d2be2d8e-05d0-4cce-8893-660e8e672830.png"},
+    {id:"rafe", name:"Rafael Santos", gender:"male", emoji:"👨‍🍳", role:"Chef", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144988300-f9436d33-244a-4c30-be1e-aad4feb42503.png"}
+];
+
+let currentBot = null;
+let conversation = [];
+
+function showAll(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('all'); }
+function showFemale(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('female'); }
+function showMale(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('male'); }
+
+function renderBots(filter) {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    const list = filter === 'all' ? bots : bots.filter(b => b.gender === filter);
+    list.forEach(bot => {
+        const div = document.createElement('div');
+        div.className = 'bot';
+        div.innerHTML = `<img src="${bot.img}"><div class="info"><div class="name">${bot.emoji} ${bot.name}</div><div class="role">${bot.role}</div></div>`;
+        div.onclick = () => openChat(bot);
+        grid.appendChild(div);
+    });
+}
+
+function openChat(bot) {
+    currentBot = bot;
+    conversation = [];
+    document.querySelector('.app').style.display = 'none';
+    const chat = document.getElementById('chatScreen');
+    chat.classList.add('open');
+    document.getElementById('chatImg').src = bot.img;
+    document.getElementById('chatName').textContent = bot.emoji + " " + bot.name;
+    document.getElementById('chatMessages').innerHTML = `<div style="text-align:center;color:#666;padding:30px;">You matched with ${bot.name}. Say something nice.</div>`;
+}
+
+function addMessage(text, isUser) {
+    const area = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `msg-row ${isUser ? 'sent' : 'received'}`;
+    div.innerHTML = `<div class="msg ${isUser ? 'sent' : 'received'}">${text}</div>`;
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+}
+
+function sendUserMessage() {
+    const input = document.getElementById('userMsg');
+    const text = input.value.trim();
+    if (!text || !currentBot) return;
+    
+    addMessage(text, true);
+    input.value = "";
+    
+    setTimeout(() => {
+        const reply = generateSmartReply(text);
+        addMessage(reply, false);
+    }, 900);
+}
+
+function generateSmartReply(userText) {
+    const lower = userText.toLowerCase();
+    
+    if (!currentBot) return "I'm listening...";
+    
+    const replies = {
+        scarlett: ["You have my full attention 😏 What made you say that?", "That's actually really interesting... tell me more.", "You're dangerous. I like it."],
+        alessandra: ["Tesoro, you know how to make a girl smile ❤️", "You're trouble... but the good kind.", "Keep talking like that and I might have to fly to you."],
+        luna: ["The stars are aligning in a very interesting way right now 🌙", "Your energy feels familiar... have we met in another life?"],
+        ethan: ["That actually made me smile. Not many people can do that.", "You're speaking my language. What's your next adventure?"],
+        marcus: ["That's a fascinating perspective. Most people don't think that deeply."],
+        jax: ["Damn... you're really interesting.", "You just hit me right in the soul with that one."],
+        liam: ["Okay you just won the conversation. Respect.", "You're smarter than you let on, aren't you?"],
+        rafe: ["You just made my heart skip a beat. Keep going."],
+    };
+    
+    const botReplies = replies[currentBot.id] || ["Tell me more about that..."];
+    return botReplies[Math.floor(Math.random() * botReplies.length)];
+}
+
+function goBack() {
+    document.getElementById('chatScreen').classList.remove('open');
+    document.querySelector('.app').style.display = 'flex';
+}
+
+// Initialize
+renderBots('all');
+</script>
+</body>
+</html>
