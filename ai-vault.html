@@ -1,165 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Vault • 8 Intelligent Chatbots</title>
-<style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#0a0a0a; color:#eee; height:100vh; overflow:hidden; }
-    .app { display:flex; flex-direction:column; height:100%; }
-    .header { text-align:center; padding:20px; background:#111; }
-    .header h1 { font-size:28px; background:linear-gradient(90deg,#fe3c72,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .tabs { display:flex; justify-content:center; gap:10px; padding:10px; background:#151515; }
-    .tab { padding:10px 20px; border-radius:30px; border:2px solid #333; cursor:pointer; font-weight:600; }
-    .tab.active { background:#fe3c72; border-color:#fe3c72; color:white; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:15px; padding:20px; overflow-y:auto; }
-    .bot { background:#1a1a1a; border-radius:16px; overflow:hidden; cursor:pointer; transition:0.2s; }
-    .bot:hover { transform:scale(1.05); }
-    .bot img { width:100%; height:170px; object-fit:cover; }
-    .info { padding:12px; text-align:center; }
-    .name { font-weight:700; font-size:15.5px; }
-    .role { font-size:12px; color:#aaa; }
-    .chat { display:none; flex-direction:column; height:100%; background:#0a0a0a; }
-    .chat.open { display:flex; }
-    .chat-header { height:65px; background:#111; display:flex; align-items:center; padding:0 15px; gap:12px; border-bottom:1px solid #222; }
-    .back { font-size:30px; background:none; border:none; color:#fe3c72; cursor:pointer; }
-    .messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; }
-    .msg { max-width:80%; padding:13px 17px; border-radius:18px; line-height:1.5; }
-    .sent { align-self:flex-end; background:#fe3c72; color:white; border-bottom-right-radius:6px; }
-    .received { align-self:flex-start; background:#222; border-bottom-left-radius:6px; }
-    .input-area { padding:15px; background:#111; display:flex; gap:10px; }
-    input { flex:1; padding:15px; border-radius:30px; border:none; background:#222; color:white; font-size:16px; }
-    button { background:#fe3c72; color:white; border:none; width:50px; height:50px; border-radius:50%; cursor:pointer; font-size:18px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Companions - Explicit Florida Models</title>
+    <style>
+        body { font-family: Arial; margin: 0; background: #1a1a2e; color: #eee; }
+        .container { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: #16213e; padding: 20px; overflow-y: auto; }
+        .companion { padding: 14px; margin: 8px 0; border-radius: 8px; cursor: pointer; }
+        .companion.active { background: #0f3460; border-left: 4px solid #e17055; }
+        .chat { flex: 1; display: flex; flex-direction: column; }
+        .messages { flex: 1; padding: 20px; overflow-y: auto; background: #0f1629; }
+        .message { margin: 12px 0; padding: 14px; border-radius: 12px; max-width: 80%; }
+        .user { background: #00b894; margin-left: auto; color: white; }
+        .ai { background: #6c5ce7; }
+        .image { max-width: 340px; border-radius: 12px; margin: 10px 0; }
+        .input-area { padding: 15px; background: #16213e; display: flex; gap: 8px; flex-wrap: wrap; }
+        input { flex: 1; padding: 14px; border: none; border-radius: 8px; min-width: 220px; }
+        button { padding: 14px 20px; background: #e17055; border: none; border-radius: 8px; color: white; cursor: pointer; }
+    </style>
 </head>
 <body>
-
-<div class="app">
-    <div class="header">
-        <h1>AI Vault</h1>
-        <p>8 Intelligent AI Companions</p>
-    </div>
-    
-    <div class="tabs">
-        <button class="tab active" onclick="showAll(this)">All</button>
-        <button class="tab" onclick="showFemale(this)">👩 Female</button>
-        <button class="tab" onclick="showMale(this)">👨 Male</button>
-    </div>
-
-    <div class="grid" id="grid"></div>
-</div>
-
-<!-- Chat Screen -->
-<div class="chat" id="chatScreen">
-    <div class="chat-header">
-        <button class="back" onclick="goBack()">←</button>
-        <img id="chatImg" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid #fe3c72;" src="">
-        <div>
-            <div id="chatName" style="font-weight:700;"></div>
-            <div style="font-size:13px;color:#22c55e;">● Online • Very Intelligent</div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Hot Florida Models</h2>
+            <div class="companion" data-name="Mia" onclick="selectCompanion(this)">🌴 Mia - Miami Party Slut</div>
+            <div class="companion" data-name="Sophia" onclick="selectCompanion(this)">🔥 Sophia - South Beach Latina Whore</div>
+            <div class="companion" data-name="Riley" onclick="selectCompanion(this)">😈 Riley - Tampa Bratty Tease</div>
+            <div class="companion" data-name="Jade" onclick="selectCompanion(this)">💪 Jade - Orlando Fitness Goddess</div>
+        </div>
+        
+        <div class="chat">
+            <h2 id="chat-title">Select a Florida model</h2>
+            <div class="messages" id="messages"></div>
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button onclick="sendMessage()">Send</button>
+                <button onclick="teaseMe()">Make her tease me</button>
+                <button onclick="speakLastMessage()">🔊</button>
+            </div>
         </div>
     </div>
-    <div class="messages" id="chatMessages"></div>
-    <div class="input-area">
-        <input id="userMsg" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendUserMessage()">
-        <button onclick="sendUserMessage()">↑</button>
-    </div>
-</div>
 
-<script>
-// ==================== 8 INTELLIGENT BOTS ====================
-const bots = [
-    {id:"scarlett", name:"Scarlett Montgomery", gender:"female", emoji:"💎", role:"Actress", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774141931552-ef7732ca-d61e-4db1-9db0-ab613effca53.png"},
-    {id:"alessandra", name:"Alessandra Rossi", gender:"female", emoji:"🔥", role:"Supermodel", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774142487555-0a8ff84e-5c63-4ee8-85f7-ebce1955c689.png"},
-    {id:"luna", name:"Luna Towles", gender:"female", emoji:"🌙", role:"Musician", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774143095145-cb305e9e-ce61-4a04-a53b-25e7de2964ee.png"},
-    {id:"ethan", name:"Ethan Blackwood", gender:"male", emoji:"🏔️", role:"Photographer", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144986748-cc5805dd-7d15-4a9f-a7b3-af35e7d59965.png"},
-    {id:"marcus", name:"Dr. Marcus Hale", gender:"male", emoji:"🧠", role:"Professor", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144986956-5b4e6ecd-7558-4a77-adcb-9e6fca9f5ba4.png"},
-    {id:"jax", name:"Jax Rivera", gender:"male", emoji:"🎸", role:"Tattoo Artist", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144987757-f4afc625-533c-450e-bc61-b59bb1573d17.png"},
-    {id:"liam", name:"Liam Voss", gender:"male", emoji:"💻", role:"Engineer", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144987982-d2be2d8e-05d0-4cce-8893-660e8e672830.png"},
-    {id:"rafe", name:"Rafael Santos", gender:"male", emoji:"👨‍🍳", role:"Chef", img:"https://bkatrpghmzbpjhegvkev.supabase.co/storage/v1/object/public/s/generated-image-1774144988300-f9436d33-244a-4c30-be1e-aad4feb42503.png"}
-];
+    <script>
+        let currentCompanion = null;
+        let lastAIMessage = "";
+        let conversationHistory = [];
+        
+        const companions = {
+            "Mia": {
+                name: "Mia",
+                personality: "wild Miami party slut",
+                openers: ["Fuck yes daddy ", "Oh god I'm so fucking wet ", "Mmm you have me throbbing ", "I'm such a nasty Miami whore ", "My cunt is dripping just thinking "],
+                acts: ["I need your thick cock stretching my tight cunt ", "pound my sloppy pussy until I scream ", "fill me with your hot cum and breed me ", "deepthroat your dick until I gag and drool ", "take my ass raw while people might see "],
+                body: ["my perky tits bouncing ", "my juicy ass clapping ", "my soaked Miami pussy clenching ", "cum leaking down my thighs ", "my hard nipples begging to be slapped "],
+                kinks: ["in public on the beach ", "while choking me hard ", "like the loud party slut I am ", "until I'm a shaking creampie mess ", "so everyone hears what a whore I am "],
+                closers: ["Use me right now baby.", "I'm your filthy cumdump.", "Tell me how you'd destroy me.", "I'm touching my cunt for you.", "I need to be bred ASAP."],
+                images: ["https://picsum.photos/id/1015/600/900", "https://picsum.photos/id/29/600/900"]
+            },
+            "Sophia": {
+                name: "Sophia",
+                personality: "fiery South Beach Latina whore",
+                openers: ["Ay papi, ", "Estoy tan cachonda ", "Mmm fuck me harder ", "Quiero tu verga gruesa ", "Dios mío, my pussy is throbbing "],
+                acts: ["chinga mi coño mojado duro ", "let me worship your big cock with my mouth ", "fuck my tight Latina cunt rough ", "fill me with cum until it overflows ", "destroy my holes like the puta I am "],
+                body: ["my fat ass shaking ", "my wet coño dripping ", "these big tits bouncing ", "my throat taking every inch ", "my body made for breeding "],
+                kinks: ["while you choke me ", "mixing English and Spanish ", "deep and nasty ", "making me your dirty slut ", "in the club bathroom "],
+                closers: ["¡Dame todo papi!", "I'm your cock-worshipping whore.", "Cum inside me now.", "Use this Latina body.", "I'm so fucking horny for you."],
+                images: ["https://picsum.photos/id/133/600/900", "https://picsum.photos/id/201/600/900"]
+            },
+            "Riley": {
+                name: "Riley",
+                personality: "bratty Tampa OnlyFans tease",
+                openers: ["Aww is that little dick hard already? ", "You don't deserve this perfect pussy yet ", "Beg like a pathetic loser and maybe ", "I'm such a bratty little whore but ", "My OnlyFans fans would love watching you "],
+                acts: ["edge you for hours before letting you taste my cunt ", "make you worship my ass first ", "deny your orgasm until you're crying ", "ride your face until I cum all over you ", "tease my tight pussy while you watch "],
+                body: ["my toned Tampa body ", "this bratty ass you can't have ", "my dripping superior cunt ", "these perfect tits you're unworthy of ", "my smooth shaved pussy "],
+                kinks: ["while calling you my good boy ", "making you beg on your knees ", "femdom style ", "posting about how desperate you are ", "slow teasing until you break "],
+                closers: ["Now beg properly.", "You're my little toy.", "Maybe I'll let you cum if you're pathetic enough.", "Keep simping for this pussy.", "Tell me how bad you need it, loser."],
+                images: ["https://picsum.photos/id/160/600/900", "https://picsum.photos/id/251/600/900"]
+            },
+            "Jade": {
+                name: "Jade",
+                personality: "athletic Orlando fitness goddess",
+                openers: ["After my workout I'm sweaty and horny as fuck ", "My tight athletic body needs ", "Look at these strong legs ", "I'm still dripping sweat and pussy juice ", "Pin me down and use this toned body "],
+                acts: ["fuck me until my legs shake ", "lick my sweaty cunt clean ", "cum all over my abs ", "get crushed by my thighs while eating me ", "stretch my tight pussy after leg day "],
+                body: ["my rock hard abs ", "my powerful ass ", "these long muscular legs ", "my perky workout tits ", "my glistening sweaty body "],
+                kinks: ["post-gym rough sex ", "body worship ", "being dominated hard ", "riding you with my strong hips ", "making you clean up every drop "],
+                closers: ["Are you going to be a good boy for me?", "I can take it harder than you think.", "Worship this fitness goddess.", "Drain your balls on my stomach.", "Come taste how wet leg day made me."],
+                images: ["https://picsum.photos/id/29/600/900", "https://picsum.photos/id/201/600/900"]
+            }
+        };
 
-let currentBot = null;
-let conversation = [];
+        function selectCompanion(el) {
+            document.querySelectorAll('.companion').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            currentCompanion = companions[el.dataset.name];
+            document.getElementById("chat-title").textContent = `${currentCompanion.name} (${currentCompanion.personality})`;
+            document.getElementById("messages").innerHTML = `<p style="color:#888">Chatting with ${currentCompanion.name}. She is extremely horny and generates unique filthy replies every time.</p>`;
+            conversationHistory = [];
+        }
 
-function showAll(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('all'); }
-function showFemale(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('female'); }
-function showMale(btn) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderBots('male'); }
+        function generateExplicitResponse() {
+            if (!currentCompanion) return "I'm so fucking wet for you...";
+            const p = currentCompanion;
+            const opener = p.openers[Math.floor(Math.random() * p.openers.length)];
+            const act = p.acts[Math.floor(Math.random() * p.acts.length)];
+            const bodyPart = p.body[Math.floor(Math.random() * p.body.length)];
+            const kink = p.kinks[Math.floor(Math.random() * p.kinks.length)];
+            const closer = p.closers[Math.floor(Math.random() * p.closers.length)];
+            return opener + act + bodyPart + kink + closer;
+        }
 
-function renderBots(filter) {
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    const list = filter === 'all' ? bots : bots.filter(b => b.gender === filter);
-    list.forEach(bot => {
-        const div = document.createElement('div');
-        div.className = 'bot';
-        div.innerHTML = `<img src="${bot.img}"><div class="info"><div class="name">${bot.emoji} ${bot.name}</div><div class="role">${bot.role}</div></div>`;
-        div.onclick = () => openChat(bot);
-        grid.appendChild(div);
-    });
-}
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById("messages");
+            const msg = document.createElement("div");
+            msg.className = `message ${type}`;
+            msg.innerHTML = text;
+            messagesDiv.appendChild(msg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
 
-function openChat(bot) {
-    currentBot = bot;
-    conversation = [];
-    document.querySelector('.app').style.display = 'none';
-    const chat = document.getElementById('chatScreen');
-    chat.classList.add('open');
-    document.getElementById('chatImg').src = bot.img;
-    document.getElementById('chatName').textContent = bot.emoji + " " + bot.name;
-    document.getElementById('chatMessages').innerHTML = `<div style="text-align:center;color:#666;padding:30px;">You matched with ${bot.name}. Say something nice.</div>`;
-}
+        function sendMessage() {
+            const input = document.getElementById("userInput");
+            const message = input.value.trim();
+            if (!message || !currentCompanion) return;
 
-function addMessage(text, isUser) {
-    const area = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = `msg-row ${isUser ? 'sent' : 'received'}`;
-    div.innerHTML = `<div class="msg ${isUser ? 'sent' : 'received'}">${text}</div>`;
-    area.appendChild(div);
-    area.scrollTop = area.scrollHeight;
-}
+            addMessage(message, "user");
+            conversationHistory.push({role: "user", content: message});
+            
+            const reply = generateExplicitResponse();
+            
+            if (Math.random() < 0.35 && currentCompanion.images.length > 0) {
+                const randomImage = currentCompanion.images[Math.floor(Math.random() * currentCompanion.images.length)];
+                setTimeout(() => {
+                    addMessage(`<img class="image" src="${randomImage}" alt="Picture from ${currentCompanion.name}">`, "ai");
+                }, 900);
+            }
+            
+            setTimeout(() => {
+                addMessage(reply, "ai");
+                lastAIMessage = reply;
+                conversationHistory.push({role: "assistant", content: reply});
+            }, 650);
+            
+            input.value = "";
+        }
 
-function sendUserMessage() {
-    const input = document.getElementById('userMsg');
-    const text = input.value.trim();
-    if (!text || !currentBot) return;
-    
-    addMessage(text, true);
-    input.value = "";
-    
-    setTimeout(() => {
-        const reply = generateSmartReply(text);
-        addMessage(reply, false);
-    }, 900);
-}
+        function teaseMe() {
+            if (!currentCompanion) return;
+            const reply = generateExplicitResponse();
+            addMessage(reply, "ai");
+            lastAIMessage = reply;
+            conversationHistory.push({role: "assistant", content: reply});
+        }
 
-function generateSmartReply(userText) {
-    const lower = userText.toLowerCase();
-    
-    if (!currentBot) return "I'm listening...";
-    
-    const replies = {
-        scarlett: ["You have my full attention 😏 What made you say that?", "That's actually really interesting... tell me more.", "You're dangerous. I like it."],
-        alessandra: ["Tesoro, you know how to make a girl smile ❤️", "You're trouble... but the good kind.", "Keep talking like that and I might have to fly to you."],
-        luna: ["The stars are aligning in a very interesting way right now 🌙", "Your energy feels familiar... have we met in another life?"],
-        ethan: ["That actually made me smile. Not many people can do that.", "You're speaking my language. What's your next adventure?"],
-        marcus: ["That's a fascinating perspective. Most people don't think that deeply."],
-        jax: ["Damn... you're really interesting.", "You just hit me right in the soul with that one."],
-        liam: ["Okay you just won the conversation. Respect.", "You're smarter than you let on, aren't you?"],
-        rafe: ["You just made my heart skip a beat. Keep going."],
-    };
-    
-    const botReplies = replies[currentBot.id] || ["Tell me more about that..."];
-    return botReplies[Math.floor(Math.random() * botReplies.length)];
-}
-
-function goBack() {
-    document.getElementById('chatScreen').classList.remove('open');
-    document.querySelector('.app').style.display = 'flex';
-}
-
-// Initialize
-renderBots('all');
-</script>
+        function speakLastMessage() {
+            if (!lastAIMessage) return;
+            const utterance = new SpeechSynthesisUtterance(lastAIMessage);
+            utterance.pitch = 1.05;
+            utterance.rate = 0.96;
+            speechSynthesis.speak(utterance);
+        }
+        
+        // Replace placeholder images with your own hosted NSFW photos for best results
+    </script>
 </body>
 </html>
